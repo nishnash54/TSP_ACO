@@ -10,6 +10,8 @@ class SolveTSPUsingACO:
         def __init__(self, a, b, weight, initial_pheromone):
             self.a = a
             self.b = b
+            if weight == 0:
+                weight = 1e-10
             self.weight = weight
             self.pheromone = initial_pheromone
 
@@ -168,7 +170,7 @@ if __name__ == '__main__':
     _colony_size = 5
     _steps = 50
 
-    f = open('./result.csv', 'w')
+    f = open('./out.csv', 'w')
 
     f.write(','.join(['Iteration', 'ACS_time', 'ACS_dist', 'Elitist_time', \
         'Elitist_dist', 'MaxMin_time', 'MaxMin_dist']))
