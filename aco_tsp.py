@@ -86,6 +86,7 @@ class SolveTSPUsingACO:
     def _acs(self):
         for step in range(self.steps):
             for ant in self.ants:
+                # Amout of pheromone increment is constant.
                 self._add_pheromone(ant.find_tour(), ant.get_distance())
                 if ant.distance < self.global_best_distance:
                     self.global_best_tour = ant.tour
@@ -101,6 +102,7 @@ class SolveTSPUsingACO:
                 if ant.distance < self.global_best_distance:
                     self.global_best_tour = ant.tour
                     self.global_best_distance = ant.distance
+            # Amout of pheromone depends upon the quality of the solution.
             self._add_pheromone(self.global_best_tour, self.global_best_distance, weight=self.elitist_weight)
             for i in range(self.num_nodes):
                 for j in range(i + 1, self.num_nodes):
@@ -116,15 +118,19 @@ class SolveTSPUsingACO:
                     iteration_best_tour = ant.tour
                     iteration_best_distance = ant.distance
             if float(step + 1) / float(self.steps) <= 0.75:
+                # Initially higher weight gradually reduced will 75% completion
                 self._add_pheromone(iteration_best_tour, iteration_best_distance)
                 max_pheromone = self.pheromone_deposit_weight / iteration_best_distance
             else:
+                # Last 25% weights based on quality of route after comparing with the global best tour.
                 if iteration_best_distance < self.global_best_distance:
                     self.global_best_tour = iteration_best_tour
                     self.global_best_distance = iteration_best_distance
                 self._add_pheromone(self.global_best_tour, self.global_best_distance)
                 max_pheromone = self.pheromone_deposit_weight / self.global_best_distance
             min_pheromone = max_pheromone * self.min_scaling_factor
+
+            # Setting edge weights to min and max phermones
             for i in range(self.num_nodes):
                 for j in range(i + 1, self.num_nodes):
                     self.edges[i][j].pheromone *= (1.0 - self.rho)
@@ -176,6 +182,7 @@ if __name__ == '__main__':
         'Elitist_dist', 'MaxMin_time', 'MaxMin_dist']))
     f.write('\n')
 
+    # Analyse and compare the various modes
     for i in range(10):
 
         print('Iter: ', i+1)
